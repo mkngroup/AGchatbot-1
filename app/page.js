@@ -1,23 +1,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import MayUi_Button from "@/lib/components/mayui/mayui_button";
 import MayUi_Input from "@/lib/components/mayui/mayui_input";
 import { FcGoogle } from "react-icons/fc";
-import { onAuthStateChanged } from 'firebase/auth';
-import { redirect, usePathname } from 'next/navigation'; // Import usePathname from next/navigation
+import { onAuthStateChanged } from "firebase/auth";
+import { redirect, usePathname } from "next/navigation"; // Import usePathname from next/navigation
 import { googleSignIn } from "@/lib/auth/authtypes";
 import { useAuthContext } from "@/lib/context/auth.context";
+import LoadingClientSide from "@/lib/components/loading/loading";
 
 export default function Home() {
-  const { user, loading } = useAuthContext()
+  const { user, loading } = useAuthContext();
 
   if (user) {
-    redirect('/chat')
+    redirect("/chat");
   }
   if (loading) {
-    return (<div className="absolute top-0 right-0 w-full h-full bg-yellow-500 text-white"></div>)
+    return <LoadingClientSide />;
   }
 
   return (
@@ -31,8 +32,9 @@ export default function Home() {
         </nav>
         <div className="flex-1 flex flex-col justify-center  h-full">
           <p className="text-4xl font-sans font-semibold text-green-800">
-            AgChatBot ile sohbet etmeye hazır mısınız? Size kişisel bir asistan olarak hizmet
-            vermek ve ilginç konular hakkında sizinle sohbet etmek için buradayım.
+            AgChatBot ile sohbet etmeye hazır mısınız? Size kişisel bir asistan
+            olarak hizmet vermek ve ilginç konular hakkında sizinle sohbet etmek
+            için buradayım.
           </p>
         </div>
       </div>
@@ -50,17 +52,19 @@ export default function Home() {
             label={"Email address"}
             name={"emailaddress"}
             type={"text"}
-            onChange={() => { }}
+            onChange={() => {}}
           />
           <MayUi_Button />
           <span className="text-center text-sm text-gray-400 font-medium font-sans">
             OR
           </span>
-          <button onClick={googleSignIn} className="w-full flex items-center text-left tracking-wide text-sm font-semibold border border-green-600  bg-white text-gray-700 py-[17px] px-4 rounded">
+          <button
+            onClick={googleSignIn}
+            className="w-full flex items-center text-left tracking-wide text-sm font-semibold border border-green-600  bg-white text-gray-700 py-[17px] px-4 rounded"
+          >
             <FcGoogle className="text-2xl mr-3" />
             Continue with Google
           </button>
-
         </div>
       </div>
     </main>
