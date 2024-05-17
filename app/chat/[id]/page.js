@@ -9,11 +9,16 @@ function page({ params }) {
   const { Service } = ChatService();
   const { user } = useAuthContext();
   const endRef = createRef();
+
   const scrollToBottom = () => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
   useEffect(() => {
+    Service.getChatFirestore(params.id);
+    Service.setChatIdFirestore(params.id);
     scrollToBottom();
+    console.log(params.id);
   }, []);
   useEffect(() => {
     scrollToBottom();
@@ -26,170 +31,12 @@ function page({ params }) {
             <Message_Ui
               key={index}
               message={item.content}
-              type={item.from}
+              type={item.role}
               ownername={user?.displayName}
             />
           );
         })}
 
-        {/* <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} /> */}
-        {/* <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey !"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-
-        <Message_Ui
-          message={"Can you help me ?"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        />
-        <Message_Ui message={"Yes I can help you"} type={"agchatbot"} />
-        <Message_Ui
-          message={" Okey ! son"}
-          type={"user"}
-          ownername={"Aliyar Gasimli"}
-        /> */}
         <div ref={endRef} />
       </ul>
       <br />

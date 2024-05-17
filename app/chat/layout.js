@@ -3,18 +3,31 @@ import { UserChats } from "@/lib/database/chats";
 import Link from "next/link";
 import { FaGooglePlay } from "react-icons/fa";
 import { PiClipboardText } from "react-icons/pi";
-import { BsSend } from "react-icons/bs";
-import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for generating unique message IDs
-
 import React, { useEffect, useState } from "react";
-
-import { redirect, usePathname } from "next/navigation"; // Import usePathname from next/navigation
+import { redirect, useRouter } from "next/navigation";
 import { useAuthContext } from "@/lib/context/auth.context";
 import LoadingClientSide from "@/lib/components/loading/loading";
-
+import { googleSignIn } from "@/lib/auth/authtypes";
+import {
+  getUserChatsFirestore,
+  removeChatFirestore,
+} from "@/lib/functions/firestore.functions";
+import { IoTrashOutline } from "react-icons/io5";
 export default function ChatLayout({ children }) {
-  const { user, loading } = useAuthContext();
+  const { user, loading, SignOut } = useAuthContext();
   const [LOADING, setLOADING] = useState(true);
+  const [chats, setchats] = useState([]);
+  const router = useRouter();
+
+  const handleNewChat = () => {
+    router.push("/chat");
+  };
+
+  const getChats = async () => {
+    await getUserChatsFirestore(user.uid, setchats);
+  };
+
+  const removeChat = async () => {};
 
   useEffect(() => {
     if (!loading) {
@@ -22,17 +35,11 @@ export default function ChatLayout({ children }) {
         redirect("/");
       } else {
         setLOADING(false);
+        getChats();
       }
     }
   }, [user, loading]);
 
-  // Function to handle creating a new message
-  const handleNewChat = () => {
-    // Generate a unique message ID
-    const messageId = uuidv4();
-    // Redirect to the new chat page with the generated message ID
-    window.location.href = `/chat/${messageId}`;
-  };
   if (LOADING) {
     return <LoadingClientSide />;
   }
@@ -57,13 +64,44 @@ export default function ChatLayout({ children }) {
         {/* menu */}
         <div className="scrollbar px-5 h-full  overflow-y-auto pt-4">
           <ul className="flex flex-col space-y-2">
-            {UserChats?.map((item, key) => {
+            {chats?.map((item, key) => {
               return (
-                <Link href={`/chat/${item.id}`} key={key}>
-                  <button className="w-full flex items-center py-[10px] px-2 justify-between rounded-md text-sm text-nowrap overflow-hidden hover:bg-[#202123]">
-                    {item.title}
+                <div
+                  key={key}
+                  className="relative w-full flex items-center justify-between py-[8px] px-2 space-x-1 rounded-md text-sm text-nowrap overflow-hidden hover:bg-[#202123]"
+                >
+                  <button
+                    onClick={() => {
+                      router.push(`/chat/${item.docId}`);
+                    }}
+                    className=" p-1 "
+                  >
+                    {item.chatname}
                   </button>
-                </Link>
+                  <button
+                    onClick={() => {
+                      removeChatFirestore(user.uid, item.docId);
+                    }}
+                    className=" text-xl  min-w-min absolute right-0 bg-black"
+                  >
+                    <IoTrashOutline />
+                  </button>
+                </div>
+                // <Link
+                //   href={`/chat/${item.docId}`}
+                //   key={key}
+                //   className="group relative flex items-center justify-end"
+                // >
+                //   <button className="w-full flex items-center py-[10px] px-2 justify-between rounded-md text-sm text-nowrap overflow-hidden hover:bg-[#202123]">
+                //     {item.chatname}
+                //   </button>
+                //   <button
+                //     // onClick={() => removeChatFirestore(user.uid, item.docId)}
+                //     className="absolute bg-black min-w-min p-1 hidden group-hover:block hover:bg-[#202123] transition-all ease-in-out duration-150"
+                //   >
+                //     <IoTrashOutline />
+                //   </button>
+                // </Link>
               );
             })}
           </ul>
@@ -100,6 +138,21 @@ export default function ChatLayout({ children }) {
           </p>
         </div>
       </div>
+      {user ? (
+        <button
+          onClick={SignOut}
+          className="absolute top-0 right-0 mt-4 mr-4 bg-red-500 text-white py-2 px-4 rounded-md "
+        >
+          Sign Out
+        </button>
+      ) : (
+        <button
+          onClick={googleSignIn}
+          className="absolute top-0 right-0 mt-4 bg-blue-500 text-white py-2 px-4 rounded-md"
+        >
+          Sign In with Google
+        </button>
+      )}
     </main>
   );
 }

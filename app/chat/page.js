@@ -1,53 +1,83 @@
 "use client";
-import React, { useState } from "react";
-
+import React, { createRef, useEffect, useState } from "react";
 import { useAuthContext } from "@/lib/context/auth.context";
-import { googleSignIn } from "@/lib/auth/authtypes";
-import { BsSend } from "react-icons/bs";
 import MessageBar from "@/lib/components/chat/messagebar";
 import ChatService from "./chatservice";
+import Message_Ui from "@/lib/components/chat/message";
 
 export default function Chat() {
   const { user, loading, SignOut } = useAuthContext();
-  const [chatHistory, setChatHistory] = useState([]);
   const { Service } = ChatService();
 
+  const endRef = createRef();
+  const scrollToBottom = () => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
+  useEffect(() => {
+    scrollToBottom();
+  }, [Service.chat]);
+
   return (
-    <div className="max-w-2xl mx-auto h-full overflow-hidden flex flex-col items-center justify-between px-2 pb-4 ">
-      <div className="flex-1 flex flex-col items-center mt-16">
-        {/* <FcGoogle className="text-4xl" /> */}
-        <p className="mt-6 text-2xl font-semibold">How can I help you today?</p>
-      </div>
-
-      {/* {user ? (
-        <button
-          onClick={SignOut}
-          className="absolute top-0 right-0 mt-4 mr-4 bg-red-500 text-white py-2 px-4 rounded-md "
-        >
-          Sign Out
-        </button>
-      ) : (
-        <button
-          onClick={googleSignIn}
-          className="absolute top-0 right-0 mt-4 bg-blue-500 text-white py-2 px-4 rounded-md"
-        >
-          Sign In with Google
-        </button>
-      )} */}
-
-      {/* chat history */}
-      <div className="flex flex-col mt-4 w-full">
-        {Service.chat?.map((item, index) => (
-          <div
-            key={index}
-            className={`p-2 my-1 ${
-              item.from === "user" ? "bg-blue-200 self-end" : "bg-gray-200"
-            }`}
-          >
-            <p className="text-sm">{item.content}</p>
+    <div className="min-h-full h-full flex flex-col max-w-2xl mx-auto text-pretty pb-4 px-4">
+      {Service.chat.length === 0 ? (
+        <>
+          <p className="mt-16 text-2xl font-semibold text-center">
+            How can I help you today?
+          </p>
+          <div className="grid grid-cols-2 gap-6 w-full mt-16">
+            <div className="border rounded-md flex flex-col border-gray-300 p-3 hover:bg-gray-100 ">
+              <h3 className="text-sm font-medium font-sans text-gray-700">
+                Come up with concepts
+              </h3>
+              <p className="text-xs font-sans text-gray-500">
+                for a retro-style arcade game
+              </p>
+            </div>
+            <div className="border rounded-md flex flex-col border-gray-300 p-3 hover:bg-gray-100 ">
+              <h3 className="text-sm font-medium font-sans text-gray-700">
+                Come up with concepts
+              </h3>
+              <p className="text-xs font-sans text-gray-500">
+                for a retro-style arcade game
+              </p>
+            </div>
+            <div className="border rounded-md flex flex-col border-gray-300 p-3 hover:bg-gray-100 ">
+              <h3 className="text-sm font-medium font-sans text-gray-700">
+                Come up with concepts
+              </h3>
+              <p className="text-xs font-sans text-gray-500">
+                for a retro-style arcade game
+              </p>
+            </div>
+            <div className="border rounded-md flex flex-col border-gray-300 p-3 hover:bg-gray-100 ">
+              <h3 className="text-sm font-medium font-sans text-gray-700">
+                Come up with concepts
+              </h3>
+              <p className="text-xs font-sans text-gray-500">
+                for a retro-style arcade game
+              </p>
+            </div>
           </div>
-        ))}
-      </div>
+        </>
+      ) : null}
+
+      <ul className="scrollbar flex-grow overflow-y-auto flex flex-col space-y-10 ">
+        {Service.chat?.map((item, index) => {
+          return (
+            <Message_Ui
+              key={index}
+              message={item.content}
+              type={item.role}
+              ownername={user?.displayName}
+            />
+          );
+        })}
+
+        <div ref={endRef} />
+      </ul>
 
       <MessageBar
         setMessageText={Service.handleuserMessage}

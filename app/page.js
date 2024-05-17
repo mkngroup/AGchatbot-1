@@ -1,12 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { auth } from "./firebase";
+import React from "react";
 import MayUi_Button from "@/lib/components/mayui/mayui_button";
 import MayUi_Input from "@/lib/components/mayui/mayui_input";
 import { FcGoogle } from "react-icons/fc";
-import { onAuthStateChanged } from "firebase/auth";
-import { redirect, usePathname } from "next/navigation"; // Import usePathname from next/navigation
+import { redirect } from "next/navigation"; // Import usePathname from next/navigation
 import { googleSignIn } from "@/lib/auth/authtypes";
 import { useAuthContext } from "@/lib/context/auth.context";
 import LoadingClientSide from "@/lib/components/loading/loading";
